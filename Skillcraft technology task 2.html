@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stopwatch</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f4f4f4;
+      margin: 0;
+    }
+    .stopwatch-container {
+      text-align: center;
+      background: #ffffff;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+    #display {
+      font-size: 3em;
+      margin-bottom: 20px;
+    }
+    .controls button {
+      margin: 0 10px;
+      padding: 10px 15px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    #laps {
+      margin-top: 20px;
+      list-style: none;
+      padding: 0;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="stopwatch-container">
+    <h1>Stopwatch</h1>
+    <div id="display">00:00:00</div>
+    <div class="controls">
+      <button onclick="startStopwatch()">Start</button>
+      <button onclick="pauseStopwatch()">Pause</button>
+      <button onclick="resetStopwatch()">Reset</button>
+      <button onclick="recordLap()">Lap</button>
+    </div>
+    <ul id="laps"></ul>
+  </div>
+
+  <script>
+    let [hours, minutes, seconds] = [0, 0, 0];
+    let display = document.getElementById("display");
+    let interval = null;
+    let lapCounter = 1;
+
+    function updateDisplay() {
+      let h = String(hours).padStart(2, '0');
+      let m = String(minutes).padStart(2, '0');
+      let s = String(seconds).padStart(2, '0');
+      display.textContent = `${h}:${m}:${s}`;
+    }
+
+    function startStopwatch() {
+      if (interval) return;
+      interval = setInterval(() => {
+        seconds++;
+        if (seconds === 60) {
+          seconds = 0;
+          minutes++;
+        }
+        if (minutes === 60) {
+          minutes = 0;
+          hours++;
+        }
+        updateDisplay();
+      }, 1000);
+    }
+
+    function pauseStopwatch() {
+      clearInterval(interval);
+      interval = null;
+    }
+
+    function resetStopwatch() {
+      clearInterval(interval);
+      [hours, minutes, seconds] = [0, 0, 0];
+      updateDisplay();
+      document.getElementById("laps").innerHTML = "";
+      interval = null;
+      lapCounter = 1;
+    }
+     function recordLap() {
+      const laps = document.getElementById("laps");
+      const li = document.createElement("li");
+      li.textContent = `Lap ${lapCounter++}: ${display.textContent}`;
+      laps.appendChild(li);
+    }
+  </script>
+</body>
+</html>
